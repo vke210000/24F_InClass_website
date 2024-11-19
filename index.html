@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lock n Roll Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .dice {
+            width: 60px;
+            height: 60px;
+            margin: 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            background-color: #4CAF50;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .dice:hover {
+            transform: rotate(10deg);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .score-container {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Lock n Roll</h1>
+        <div class="controls">
+            <button id="rollButton">Roll 1</button>
+            <div class="dice-container">
+                <div class="dice" id="dice1">🎲</div>
+                <div class="dice" id="dice2">🎲</div>
+                <div class="dice" id="dice3">🎲</div>
+            </div>
+            <div class="score-container">
+                <p>Score: <span id="score">0</span></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('rollButton').addEventListener('click', rollDice);
+
+        function rollDie() {
+            return Math.floor(Math.random() * 6) + 1;
+        }
+
+        function rollDice() {
+            const dice1 = rollDie();
+            const dice2 = rollDie();
+            const dice3 = rollDie();
+
+            document.getElementById('dice1').textContent = getDiceIcon(dice1);
+            document.getElementById('dice2').textContent = getDiceIcon(dice2);
+            document.getElementById('dice3').textContent = getDiceIcon(dice3);
+
+            calculateScore(dice1, dice2, dice3);
+        }
+
+        function getDiceIcon(value) {
+            const diceIcons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+            return diceIcons[value - 1];
+        }
+
+        function calculateScore(dice1, dice2, dice3) {
+            let score = dice1 + dice2 + dice3;
+
+            const counts = {};
+            [dice1, dice2, dice3].forEach(die => counts[die] = (counts[die] || 0) + 1);
+
+            let pairCount = 0;
+            for (const count of Object.values(counts)) {
+                if (count === 2) {
+                    pairCount++;
+                } else if (count === 3) {
+                    score += 30; // Three of a kind
+                }
+            }
+
+            if (pairCount === 1) {
+                score += 5; // One pair
+            } else if (pairCount === 2) {
+                score += 10; // Two pairs
+            }
+
+            const sortedDice = [dice1, dice2, dice3].sort((a, b) => a - b);
+            if (sortedDice[1] === sortedDice[0] + 1 && sortedDice[2] === sortedDice[1] + 1) {
+                score += 10; // Straight
+            }
+
+            document.getElementById('score').textContent = score;
+        }
+    </script>
+</body>
+</html>
